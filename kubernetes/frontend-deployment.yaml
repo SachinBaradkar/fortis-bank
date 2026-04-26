@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fortis-frontend
+  labels:
+    app: fortis-bank
+    tier: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fortis-bank
+      tier: frontend
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: fortis-bank
+        tier: frontend
+    spec:
+      containers:
+      - name: fortis-frontend
+        image: yourdockerhubusername/fortis-bank-frontend:IMAGE_TAG   # Jenkins replaces IMAGE_TAG
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "50m"
+          limits:
+            memory: "64Mi"
+            cpu: "100m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 20

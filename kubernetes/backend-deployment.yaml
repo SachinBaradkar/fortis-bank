@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fortis-backend
+  labels:
+    app: fortis-bank
+    tier: backend
+spec:
+  replicas: 2                        # Run 2 pods for availability
+  selector:
+    matchLabels:
+      app: fortis-bank
+      tier: backend
+  strategy:
+    type: RollingUpdate              # Zero-downtime update strategy
+    rollingUpdate:
+      maxSurge: 1                    # Allow 1 extra pod during update
+      maxUnavailable: 0             # Never kill old pod before new is ready
+  template:
+    metadata:
+      labels:
+        app: fortis-bank
+        tier: backend
+    spec:
+      containers:
+      - name: fortis-backend
+        image: yourdockerhubusername/fortis-bank-backend:IMAGE_TAG   # Jenkins replaces IMAGE_TAG
+        ports:
+        - containerPort: 5000
+        env:
+        - name: PORT
+          value: "5000"
+        - name: NODE_ENV
+          value: "production"
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
+        livenessProbe:
+          httpGet:
+            path: /balance
+            port: 5000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /balance
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 10
