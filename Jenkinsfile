@@ -10,7 +10,7 @@ pipeline {
     }
     environment {
         // Docker Hub username (change to yours)
-        DOCKER_USER    = 'yourdockerhubusername'
+        DOCKER_USER    = 'sachinbaradkar'
         FRONTEND_IMAGE = "${DOCKER_USER}/fortis-bank-frontend"
         BACKEND_IMAGE  = "${DOCKER_USER}/fortis-bank-backend"
         // Use BUILD_NUMBER so each build creates a unique image tag
