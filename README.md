@@ -611,3 +611,285 @@ A: The running application is inside a Docker container, which was built from a 
 ~/redeploy.sh
 ngrok http 8080
 cd /mnt/c/Users/Sachin\ Baradkar/fortis-bank
+
+Terminal 1 — Start Minikube
+bashminikube start --driver=docker
+minikube status
+✅ Wait for Running
+
+Terminal 1 — Build Images & Deploy
+basheval $(minikube docker-env)
+
+docker build -t fortis-bank-backend:latest "/mnt/c/Users/Sachin Baradkar/fortis-bank/backend/"
+docker build -t fortis-bank-frontend:latest "/mnt/c/Users/Sachin Baradkar/fortis-bank/frontend/"
+
+kubectl delete deployment fortis-backend fortis-frontend 2>/dev/null
+kubectl apply -f "/mnt/c/Users/Sachin Baradkar/fortis-bank/kubernetes/backend-deployment.yaml"
+kubectl apply -f "/mnt/c/Users/Sachin Baradkar/fortis-bank/kubernetes/backend-service.yaml"
+kubectl apply -f "/mnt/c/Users/Sachin Baradkar/fortis-bank/kubernetes/frontend-deployment.yaml"
+kubectl apply -f "/mnt/c/Users/Sachin Baradkar/fortis-bank/kubernetes/frontend-service.yaml"
+
+kubectl get pods -w
+✅ Wait for all 4 pods Running. Press Ctrl+C
+
+Terminal 2 — Frontend Port Forward (KEEP OPEN)
+bashkubectl port-forward service/fortis-frontend-service 3000:80
+
+Terminal 3 — Backend Port Forward (KEEP OPEN)
+bashkubectl port-forward service/fortis-backend-service 5000:5000
+
+Terminal 4 — Start Jenkins
+bashsudo systemctl start jenkins
+sudo systemctl status jenkins
+
+Terminal 4 — Start ngrok
+bashngrok http 8080
+✅ Copy the https://xxxx.ngrok-free.app URL
+Update GitHub webhook with new ngrok URL:
+
+GitHub → repo → Settings → Webhooks → Edit
+Payload URL: https://xxxx.ngrok-free.app/github-webhook/
+Save
+
+
+Open These Browser Tabs Before Teacher Arrives
+TabURLWebsitehttp://localhost:3000Backend APIhttp://localhost:5000/balanceJenkinshttp://localhost:8080Docker Hubhttps://hub.docker.com/u/sachinbaradkarGitHubhttps://github.com/SachinBaradkar/fortis-bank
+
+Final Check
+bashkubectl get pods      # all 4 Running ✅
+kubectl get services  # frontend + backend listed ✅
+Login to http://localhost:3000 with sachin.baradkar / password123 ✅
+
+
+🎬 DEMO WITH TEACHER
+
+STEP 1 — Introduce the Project (1 min)
+Say:
+
+"This is Fortis Bank — a full-stack banking web application. The main focus is the DevOps CI/CD pipeline. The complete automated flow is: Developer writes code → pushes to GitHub → Jenkins detects it automatically → builds the app → creates Docker image → pushes to Docker Hub → deploys to Kubernetes → changes go live."
+
+Show folder structure:
+bashls "/mnt/c/Users/Sachin Baradkar/fortis-bank/"
+
+STEP 2 — Show the Live Website (3 mins)
+Open http://localhost:3000
+
+Login page → enter sachin.baradkar / password123 → Sign In
+Dashboard → "Balance and transactions come from Node.js backend API"
+Transactions → show filter All/Credits/Debits
+Transfer → fill form → show success with reference number
+Profile → show account details
+
+
+STEP 3 — Show Backend APIs (1 min)
+Open browser tabs:
+http://localhost:5000/balance
+http://localhost:5000/transactions
+Say:
+
+"These are our REST APIs running inside Docker containers managed by Kubernetes. The React frontend calls these APIs to display data to the user."
+
+
+STEP 4 — Show GitHub (1 min)
+Open https://github.com/SachinBaradkar/fortis-bank
+
+Show all files and folders
+Click Commits → show commit history
+
+Say:
+
+"Every code change is tracked here. When I push code, GitHub notifies Jenkins via webhook to start the pipeline."
+
+
+STEP 5 — Show Docker Hub (1 min)
+Open https://hub.docker.com/u/sachinbaradkar
+
+Show fortis-bank-frontend and fortis-bank-backend repositories
+Click one → show Tags → show build numbers (5, latest etc.)
+
+Say:
+
+"Jenkins builds Docker images and pushes them here with a unique build number tag. Kubernetes pulls these images to create containers."
+
+
+STEP 6 — Show Kubernetes (2 mins)
+bash# Show pods
+kubectl get pods
+Say: "4 pods running — 2 frontend, 2 backend. If one crashes Kubernetes restarts it automatically."
+bash# Show services
+kubectl get services
+Say: "Services expose pods on fixed ports — frontend on 3000, backend on 5000."
+bash# Show deployments
+kubectl get deployments
+Say: "Deployments manage replicas and handle rolling updates with zero downtime."
+
+STEP 7 — Show Docker (1 min)
+basheval $(minikube docker-env)
+docker images | grep fortis
+docker ps | grep fortis
+Say:
+
+"These are our Docker images. Each image contains the complete app with all dependencies. Kubernetes runs these as containers inside pods."
+
+
+STEP 8 — Show Jenkins (2 mins)
+Open http://localhost:8080
+
+Click fortis-bank-pipeline
+Show list of previous builds
+Click latest build → Console Output
+Point to each stage:
+
+Say:
+
+"Stage 1 — Checkout: pulled latest code from GitHub. Stage 2 — Install: npm install for frontend and backend. Stage 3 — Build: React compiled to production. Stage 4 — Docker Build: new image created with new code. Stage 5 — Push: image sent to Docker Hub. Stage 6 — Deploy: Kubernetes updated with new image."
+
+
+STEP 9 — ⭐ LIVE CI/CD DEMO (Most Important — 5 mins)
+
+9.1 — Show current website
+Open http://localhost:3000
+Point to login page — show current text to teacher
+Say:
+
+"I will now make a code change. Watch — website will NOT update until full pipeline runs."
+
+
+9.2 — Make change in VS Code
+Open VS Code → frontend/src/pages/Login.js
+Find this line:
+Secure Banking.
+Change to:
+Smart Banking.
+Press Ctrl+S
+
+9.3 — Refresh browser BEFORE push
+Refresh http://localhost:3000
+Say:
+
+"See — old text still showing. Code changed on my machine but pipeline hasn't run yet. This proves changes don't reflect automatically."
+
+
+9.4 — Push to GitHub
+bashcd "/mnt/c/Users/Sachin Baradkar/fortis-bank"
+git add .
+git commit -m "Changed login heading - live demo"
+git push
+Say:
+
+"Code pushed to GitHub. GitHub webhook will now notify Jenkins automatically."
+
+
+9.5 — Show Jenkins auto-triggered
+Switch to Jenkins browser tab → fortis-bank-pipeline
+Show new build started automatically ✅
+Click it → Console Output → show stages running live
+Say:
+
+"Jenkins detected the push via webhook and started automatically. Watch it install dependencies, build React, create Docker image, push to Docker Hub."
+
+
+9.6 — Redeploy to Kubernetes
+While Jenkins runs, in Terminal 1:
+bash~/redeploy.sh
+Watch output:
+🔄 Rebuilding and redeploying...
+✅ Done! Refresh http://localhost:3000
+
+9.7 — Show change is LIVE
+Refresh http://localhost:3000
+✅ New text "Smart Banking." now visible on login page!
+Say:
+
+"Change is now live — only after going through the complete pipeline: Code → GitHub → Jenkins → Docker → Kubernetes. This is CI/CD in action."
+
+
+STEP 10 — Show Nagios (if asked)
+bashsudo systemctl start nagios4
+Open http://localhost/nagios4 → login: nagiosadmin
+Click Services → show all green ✅
+Say:
+
+"Nagios monitors our application 24/7. It checks if frontend is responding, if backend API is working, and monitors CPU, memory, disk. If anything goes down it sends an alert."
+
+
+
+📋 QUICK VIVA ANSWERS
+Q: What is CI/CD?
+
+"CI = Continuous Integration — automatically build and test code on every push. CD = Continuous Deployment — automatically deploy tested build to production. Together they eliminate manual steps between writing code and going live."
+
+Q: What is Jenkins?
+
+"Jenkins is the automation server — the brain of our pipeline. It watches GitHub via webhook, and when code is pushed it automatically runs all stages: checkout, install, build, dockerize, deploy."
+
+Q: What is Docker?
+
+"Docker packages the app with all its dependencies into a container. It runs the same way on any machine — no 'works on my machine' problem."
+
+Q: What is Kubernetes?
+
+"Kubernetes manages Docker containers. It runs multiple replicas for high availability, automatically restarts crashed pods, and does rolling updates with zero downtime."
+
+Q: What is Nagios?
+
+"Nagios monitors the live application 24/7. It checks if services are up, measures response times, and monitors system resources. It alerts the team immediately if something fails."
+
+Q: Why doesn't code change reflect immediately?
+
+"The running app is inside a Docker container built from old code. New code only goes live after the complete pipeline runs — push triggers Jenkins, Jenkins builds new Docker image, Kubernetes replaces old containers with new ones."
+
+Q: What is a webhook?
+
+"A webhook is an automatic notification. When code is pushed to GitHub, GitHub sends an HTTP POST request to Jenkins URL. Jenkins receives it and immediately starts the pipeline — no manual triggering needed."
+
+Q: What is a rolling update?
+
+"Kubernetes starts new pods with new code before killing old pods. So during deployment, some pods serve old version and some serve new — users never see downtime."
+
+
+🚨 EMERGENCY FIXES
+Website not opening:
+bashkubectl port-forward service/fortis-frontend-service 3000:80
+Pods not running:
+basheval $(minikube docker-env)
+docker build -t fortis-bank-frontend:latest "/mnt/c/Users/Sachin Baradkar/fortis-bank/frontend/"
+docker build -t fortis-bank-backend:latest "/mnt/c/Users/Sachin Baradkar/fortis-bank/backend/"
+kubectl rollout restart deployment/fortis-frontend
+kubectl rollout restart deployment/fortis-backend
+kubectl get pods -w
+Jenkins not opening:
+bashsudo systemctl restart jenkins
+# Wait 30 seconds
+Jenkins not auto-triggering:
+bash# Restart ngrok and update webhook URL in GitHub
+ngrok http 8080
+Then manually click Build Now in Jenkins and explain webhook concept verbally.
+Change not reflecting after redeploy.sh:
+bash# Stop and restart port-forward
+# Ctrl+C in Terminal 2, then:
+kubectl port-forward service/fortis-frontend-service 3000:80
+
+✅ DEMO CHECKLIST
+Setup:
+□ minikube start → Running
+□ All 4 pods → Running
+□ Terminal 2 → port-forward frontend 3000
+□ Terminal 3 → port-forward backend 5000
+□ Jenkins → active on :8080
+□ ngrok running → webhook updated in GitHub
+□ http://localhost:3000 → opens ✅
+□ Login works → sachin.baradkar / password123 ✅
+□ http://localhost:5000/balance → responds ✅
+
+During Demo:
+□ Show website all 5 pages
+□ Show backend APIs in browser
+□ Show GitHub repo + commits
+□ Show Docker Hub images
+□ Show kubectl get pods/services
+□ Show docker images
+□ Show Jenkins pipeline + console output
+□ Live demo: change → push → Jenkins → K8s → live ✅
+□ Show Nagios monitoring
+Total demo time: ~20 minutes 🎓

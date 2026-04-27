@@ -33,7 +33,7 @@ export default function Login() {
         </div>
         <div style={{ fontSize: 11, letterSpacing: 3, textTransform: 'uppercase', color: '#c9a84c', opacity: 0.8, marginBottom: 48 }}>Private Banking</div>
         <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 48, lineHeight: 1.2, marginBottom: 20, maxWidth: 400 }}>
-          Smart Banking.<br /><span style={{ color: '#c9a84c' }}>Anywhere. Anytime.</span>
+          Banking That Moves<br /><span style={{ color: '#c9a84c' }}>With You.</span>
         </div>
         <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 15, lineHeight: 1.7, maxWidth: 360 }}>
           Experience the next level of personal finance management with Fortis Bank's secure digital banking platform.
@@ -51,14 +51,14 @@ export default function Login() {
       {/* Right Panel - Login Form */}
       <div style={{ width: 460, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px', background: 'rgba(255,255,255,0.04)', backdropFilter: 'blur(20px)', borderLeft: '1px solid rgba(201,168,76,0.15)' }}>
         <div style={{ width: '100%', maxWidth: 360 }}>
-          <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 32, color: '#fff', marginBottom: 6 }}>Welcome</h2>
+          <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 32, color: '#fff', marginBottom: 6 }}>Welcome Back</h2>
           <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13, marginBottom: 36 }}>Enter your credentials to access your account</p>
 
           {error && <div className="alert alert-error">{error}</div>}
 
           <div className="form-group">
             <label className="form-label" style={{ color: 'rgba(255,255,255,0.5)' }}>Username</label>
-            <input className="form-input" placeholder="Enter Username here" value={form.username}
+            <input className="form-input" placeholder="sachin.baradkar" value={form.username}
               onChange={e => setForm({ ...form, username: e.target.value })}
               style={{ background: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.1)', color: '#fff' }} />
           </div>
