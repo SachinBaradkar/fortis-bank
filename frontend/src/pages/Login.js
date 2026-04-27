@@ -51,7 +51,7 @@ export default function Login() {
       {/* Right Panel - Login Form */}
       <div style={{ width: 460, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px', background: 'rgba(255,255,255,0.04)', backdropFilter: 'blur(20px)', borderLeft: '1px solid rgba(201,168,76,0.15)' }}>
         <div style={{ width: '100%', maxWidth: 360 }}>
-          <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 32, color: '#fff', marginBottom: 6 }}>Welcome Back</h2>
+          <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 32, color: '#fff', marginBottom: 6 }}>Welcome</h2>
           <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13, marginBottom: 36 }}>Enter your credentials to access your account</p>
 
           {error && <div className="alert alert-error">{error}</div>}
