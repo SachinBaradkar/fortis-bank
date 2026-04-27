@@ -33,7 +33,7 @@ export default function Login() {
         </div>
         <div style={{ fontSize: 11, letterSpacing: 3, textTransform: 'uppercase', color: '#c9a84c', opacity: 0.8, marginBottom: 48 }}>Private Banking</div>
         <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 48, lineHeight: 1.2, marginBottom: 20, maxWidth: 400 }}>
-          Secure Banking.<br /><span style={{ color: '#c9a84c' }}>Anywere. Anytime.</span>
+          Secure Banking.<br /><span style={{ color: '#c9a84c' }}>Anywhere. Anytime.</span>
         </div>
         <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 15, lineHeight: 1.7, maxWidth: 360 }}>
           Experience the next level of personal finance management with Fortis Bank's secure digital banking platform.
@@ -71,7 +71,7 @@ export default function Login() {
               style={{ background: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.1)', color: '#fff' }} />
           </div>
 
-          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', marginBottom: 20 }}>Demo: <strong style={{color:'#c9a84c'}}>john.doe</strong> / <strong style={{color:'#c9a84c'}}>password123</strong></p>
+          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', marginBottom: 20 }}>Demo: <strong style={{color:'#c9a84c'}}>sachin.baradkar</strong> / <strong style={{color:'#c9a84c'}}>password123</strong></p>
 
           <button className="btn-gold" onClick={handleSubmit} disabled={loading}>
             {loading ? 'Signing In...' : 'Sign In to Account'}
