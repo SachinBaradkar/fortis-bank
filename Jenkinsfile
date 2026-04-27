@@ -98,17 +98,13 @@ pipeline {
         // ── Stage 6: Deploy to Kubernetes ─────────────────────────────────
         stage('Deploy to Kubernetes') {
     steps {
-        echo 'Building Docker images inside Minikube...'
+        echo 'Deploying to Kubernetes...'
         sh '''
-            eval $(minikube docker-env)
-
-            docker build -t fortis-bank-backend:latest ./backend
-            docker build -t fortis-bank-frontend:latest ./frontend
-
-            kubectl rollout restart deployment/fortis-backend
-            kubectl rollout restart deployment/fortis-frontend
-            kubectl rollout status deployment/fortis-backend --timeout=120s
-            kubectl rollout status deployment/fortis-frontend --timeout=120s
+            export KUBECONFIG=/var/lib/jenkins/.kube/config
+            /usr/bin/kubectl rollout restart deployment/fortis-backend
+            /usr/bin/kubectl rollout restart deployment/fortis-frontend
+            /usr/bin/kubectl rollout status deployment/fortis-backend --timeout=120s
+            /usr/bin/kubectl rollout status deployment/fortis-frontend --timeout=120s
         '''
         echo 'Deployment complete!'
     }
