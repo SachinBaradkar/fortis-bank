@@ -24,7 +24,8 @@ spec:
     spec:
       containers:
       - name: fortis-backend
-        image: yourdockerhubusername/fortis-bank-backend:IMAGE_TAG   # Jenkins replaces IMAGE_TAG
+        image: fortis-bank-backend:latest   # Jenkins replaces latest
+        imagePullPolicy: Never
         ports:
         - containerPort: 5000
         env:

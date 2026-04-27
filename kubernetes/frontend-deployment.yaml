@@ -24,7 +24,8 @@ spec:
     spec:
       containers:
       - name: fortis-frontend
-        image: yourdockerhubusername/fortis-bank-frontend:IMAGE_TAG   # Jenkins replaces IMAGE_TAG
+        image: fortis-bank-frontend:latest
+        imagePullPolicy: Never  # Jenkins replaces latest
         ports:
         - containerPort: 80
         resources:
