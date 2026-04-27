@@ -609,3 +609,5 @@ A: Nagios monitors the live application 24/7. It checks if the website responds,
 **Q: Why does a code change not reflect immediately?**
 A: The running application is inside a Docker container, which was built from a specific snapshot of code. To get new code into production, you must: push → Jenkins builds a new Docker image → Kubernetes replaces old containers with new ones.
 ~/redeploy.sh
+ngrok http 8080
+cd /mnt/c/Users/Sachin\ Baradkar/fortis-bank
