@@ -97,10 +97,8 @@ pipeline {
         stage('Deploy to Kubernetes') {
     steps {
         echo 'Building Docker images inside Minikube...'
-        sh """
-            export DOCKER_TLS_VERIFY=1
-            export DOCKER_HOST=tcp://$(minikube ip):2376
-            export DOCKER_CERT_PATH=/var/lib/jenkins/.minikube/certs
+        sh '''
+            eval $(minikube docker-env)
 
             docker build -t fortis-bank-backend:latest ./backend
             docker build -t fortis-bank-frontend:latest ./frontend
@@ -109,7 +107,7 @@ pipeline {
             kubectl rollout restart deployment/fortis-frontend
             kubectl rollout status deployment/fortis-backend --timeout=120s
             kubectl rollout status deployment/fortis-frontend --timeout=120s
-        """
+        '''
         echo 'Deployment complete!'
     }
 }
