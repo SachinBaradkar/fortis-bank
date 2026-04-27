@@ -58,7 +58,7 @@ export default function Login() {
 
           <div className="form-group">
             <label className="form-label" style={{ color: 'rgba(255,255,255,0.5)' }}>Username</label>
-            <input className="form-input" placeholder="Enter Username" value={form.username}
+            <input className="form-input" placeholder="Enter Username here" value={form.username}
               onChange={e => setForm({ ...form, username: e.target.value })}
               style={{ background: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.1)', color: '#fff' }} />
           </div>
