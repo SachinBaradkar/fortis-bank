@@ -5,7 +5,9 @@
 
 pipeline {
     agent any
-
+     tools {
+        nodejs 'NodeJS-18'
+    }
     environment {
         // Docker Hub username (change to yours)
         DOCKER_USER    = 'yourdockerhubusername'
