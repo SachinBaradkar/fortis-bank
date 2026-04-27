@@ -95,27 +95,24 @@ pipeline {
 
         // ── Stage 6: Deploy to Kubernetes ─────────────────────────────────
         stage('Deploy to Kubernetes') {
-            steps {
-                echo '☸️  Deploying to Kubernetes cluster...'
-                sh """
-                    # Update image tags in K8s manifests dynamically
-                    sed -i 's|IMAGE_TAG|${IMAGE_TAG}|g' kubernetes/frontend-deployment.yaml
-                    sed -i 's|IMAGE_TAG|${IMAGE_TAG}|g' kubernetes/backend-deployment.yaml
+    steps {
+        echo 'Building Docker images inside Minikube...'
+        sh """
+            export DOCKER_TLS_VERIFY=1
+            export DOCKER_HOST=tcp://$(minikube ip):2376
+            export DOCKER_CERT_PATH=/var/lib/jenkins/.minikube/certs
 
-                    # Apply all K8s manifests
-                    kubectl apply -f kubernetes/backend-deployment.yaml
-                    kubectl apply -f kubernetes/backend-service.yaml
-                    kubectl apply -f kubernetes/frontend-deployment.yaml
-                    kubectl apply -f kubernetes/frontend-service.yaml
+            docker build -t fortis-bank-backend:latest ./backend
+            docker build -t fortis-bank-frontend:latest ./frontend
 
-                    # Wait for rollout to complete
-                    kubectl rollout status deployment/fortis-backend  --timeout=120s
-                    kubectl rollout status deployment/fortis-frontend --timeout=120s
-                """
-                echo '✅ Kubernetes deployment successful!'
-            }
-        }
-
+            kubectl rollout restart deployment/fortis-backend
+            kubectl rollout restart deployment/fortis-frontend
+            kubectl rollout status deployment/fortis-backend --timeout=120s
+            kubectl rollout status deployment/fortis-frontend --timeout=120s
+        """
+        echo 'Deployment complete!'
+    }
+}
         // ── Stage 7: Verify Deployment ────────────────────────────────────
         stage('Verify') {
             steps {
