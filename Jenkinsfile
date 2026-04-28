@@ -98,15 +98,27 @@ pipeline {
         // ── Stage 6: Deploy to Kubernetes ─────────────────────────────────
         stage('Deploy to Kubernetes') {
     steps {
-        echo 'Deploying to Kubernetes...'
+        echo 'Building inside Minikube Docker and deploying...'
         sh '''
+            # Set Minikube Docker environment
+            export DOCKER_TLS_VERIFY=1
+            export DOCKER_HOST=tcp://192.168.49.2:2376
+            export DOCKER_CERT_PATH=/var/lib/jenkins/.minikube/certs
             export KUBECONFIG=/var/lib/jenkins/.kube/config
+
+            # Build images directly inside Minikube Docker
+            docker build -t fortis-bank-backend:latest ./backend
+            docker build -t fortis-bank-frontend:latest ./frontend
+
+            # Restart Kubernetes deployments
             /usr/bin/kubectl rollout restart deployment/fortis-backend
             /usr/bin/kubectl rollout restart deployment/fortis-frontend
+
+            # Wait for rollout to complete
             /usr/bin/kubectl rollout status deployment/fortis-backend --timeout=120s
             /usr/bin/kubectl rollout status deployment/fortis-frontend --timeout=120s
         '''
-        echo 'Deployment complete!'
+        echo '✅ Fully automated deployment complete!'
     }
 }
         // ── Stage 7: Verify Deployment ────────────────────────────────────
