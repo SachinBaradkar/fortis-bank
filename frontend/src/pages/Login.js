@@ -31,7 +31,7 @@ export default function Login() {
         <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 42, fontWeight: 500, letterSpacing: 2, marginBottom: 8 }}>
           FORTIS<span style={{ color: '#c9a84c' }}>.</span>
         </div>
-        <div style={{ fontSize: 11, letterSpacing: 3, textTransform: 'uppercase', color: '#c9a84c', opacity: 0.8, marginBottom: 48 }}>Private Banking</div>
+        <div style={{ fontSize: 11, letterSpacing: 3, textTransform: 'uppercase', color: '#c9a84c', opacity: 0.8, marginBottom: 48 }}>Banking</div>
         <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 48, lineHeight: 1.2, marginBottom: 20, maxWidth: 400 }}>
           Banking That Moves<br /><span style={{ color: '#c9a84c' }}>With You.</span>
         </div>
